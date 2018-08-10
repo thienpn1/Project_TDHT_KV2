@@ -1,0 +1,24 @@
+<SCRIPT LANGUAGE="VBScript" RUNAT="Server"> 
+
+Sub Application_OnStart
+		Application("hd")=0
+	End Sub
+	Sub Application_OnEnd
+	End Sub
+	Sub Session_OnStart
+		'Tam thoi
+		Session.TimeOut=2
+		'
+		Dim x
+		x=Application("hd")
+		x=Cint(x) + 1
+		Application("hd")=x
+	End Sub
+	Sub Session_OnEnd
+		Dim x
+		x=Application("hd")
+		x=Cint(x) - 1
+		Application("hd")=x
+	End Sub
+
+</script>

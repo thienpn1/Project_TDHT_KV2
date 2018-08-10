@@ -1,0 +1,845 @@
+<%
+	'Kiem tra nguoi dung co login hay chua (luon co dong nay o tat ca cac trang)
+	If (not Session("isLogin") or Session("add")<>"1") Then
+		Response.Redirect("default.asp?page=login&mess=notLogin")
+	End if
+' Lay thong tin cong viec
+	id = Request.QueryString("id")
+	sql = "SELECT * FROM tien_do_ha_tang WHERE id = '"& id &"'"
+    Set objRS = objConn.Execute(sql)
+	If (Not objRS.EOF) then
+
+'--------------------------------------------
+   ' Dim  cr, mailTitle, executer, problems, reportType, note, fileAtt
+	content = pdb(Server.HTMLEncode(Request.Form("content")))	
+	cr= pdb(Server.HTMLEncode(Request.Form("cr")))	
+	sub_depart = pdb(Server.HTMLEncode(Request.Form("sub_depart")))		
+	startTime = convert2SimpleDateSQL(Request.Form("startTime"))
+	endTime = convert2SimpleDateSQL(Request.Form("endTime"))
+	ask = pdb(Server.HTMLEncode(Request.Form("ask")))	
+	PROCESS = pdb(Server.HTMLEncode(Request.Form("PROCESS")))
+	PROCESS = replace(PROCESS,"{","<strong>")
+	PROCESS = replace(PROCESS,"}","</strong>")
+	total = Request.Form("total")
+	done_total = Request.Form("done_total")
+	regist = Request.Form("regist")	
+	typejob = Request.Form("typejob")
+	direct = pdb(Server.HTMLEncode(Request.Form("direct")))		
+	direct = replace(direct,"{","<strong>")
+	direct = replace(direct,"}","</strong>")	
+	note = pdb(Server.HTMLEncode(Request.Form("note")))		
+		
+	IF (content<>"" and startTime <>"") then
+		sql = " UPDATE tbl_job SET "&_
+					"content = '"&content&"' , "&_
+					"cr = '"&cr&"' , "&_
+					"sub_depart = '"&sub_depart&"' , "&_
+					"startTime = '"&startTime&"' , "&_
+					"endTime = '"&endTime&"' ,"&_ 
+					"ask = '"&ask&"' , "&_
+					"PROCESS = '"&process&"' , "&_
+					"total = '"&total&"' , "&_
+					"done_total = '"&done_total&"' , "&_
+					"regist = '"&regist&"' , "&_				
+					"typejob = '"&typejob&"' , "&_
+					"direct = '"&direct&"' , "&_
+					"note = '"&note&"'"&_
+			 	" WHERE id = "& id
+
+		'Response.Write(sql)
+		Set objRS = objConn.Execute(sql)
+		Response.Redirect("default.asp?page=JOB_list")
+	End if
+
+%>
+<style>
+<!--
+.font_alert {color: #FF0000 ; font-style: italic;}
+.font_inform {color: #000066 ;}
+-->
+</style>
+<script type="text/javascript" language="javascript">
+function validateFormOnSubmit() {
+
+  var content= document.getElementById("content")
+		if (content.value=="") 
+		{	document.getElementById("for_content").innerHTML= "Chưa nhập nội dung công việc";
+			content.focus();
+			return false;
+		}
+
+  var executer= document.getElementById("executer")
+		if (executer.value=="") 
+		{	document.getElementById("for_executer").innerHTML= "Chưa nhập nhân sự thực hiện";
+			executer.focus();
+			return false;
+		}
+		
+ var startTime= document.getElementById("startTime")
+		if (startTime.value=="") 
+		{	document.getElementById("for_startTime").innerHTML= "Chưa nhập thời gian";
+			startTime.focus();
+			return false;
+		}
+		if (!isDate(startTime.value)) 
+		{			   
+			document.getElementById("for_startTime").innerHTML= "Sai định dạng (dd/mm/yyyy)";
+			startTime.focus();
+			return false;
+		}
+  
+  return true;
+}
+
+function onChaneText(input, text)
+{
+if(input.length > 0)
+   {
+    document.getElementById(text).innerHTML= "";
+   }
+}
+  
+ //Function add ảnh hưởng
+ function addINCEffect(){
+ 	 var cb = document.getElementById("cbINCLevel");
+     var level = cb.options[cb.selectedIndex].text;
+	 var effect = document.getElementById("txt_INCLevel").value;	 
+	 if (effect!= "") 
+	 {
+	 	document.getElementById("label_INCEffect").innerHTML += level + ": " + effect + "<br>";
+		document.getElementById("hidden_effect").value += level + "$$" + effect + "||";		
+	 }
+	
+  }  
+  //Function clear ảnh hưởng
+ function clearINCEffect(){
+	document.getElementById("label_INCEffect").innerHTML = "";
+	document.getElementById("hidden_effect").value = "";			
+ }
+</script>
+
+
+<fieldset class="Khung1">
+<legend class="mau_chu_legen">Thông tin Hạ Tầng</legend>
+<div align = "left">
+<form id="frm_search" name="frm_search" method="post"  onsubmit="return validateFormOnSubmit()"  action="">
+<div class="container">
+<table width="70%" border="0"id="list_tbl" >
+   <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Tỉnh <font color="red">*</font></strong></td>
+     <td width="40%"><input  name="Tinh" id="Tinh" size="40" maxlength="250" value ="<%=objRS.Fields("Tinh")%>" ></input></td>
+     <td width="30%"><label class="font_alert" id="for_Tinh">&nbsp;</label></td>
+   </tr>
+   <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Mã nhà trạm <font color="red">*</font> </strong></td>
+     <td width="40%"><input  name="Ma_nha_tram" id="Ma_nha_tram" size="40" maxlength="250" value ="<%=objRS.Fields("Ma_nha_tram")%>"/></td>
+     <td width="30%"><label class="font_alert" id="for_Ma_nha_tram">&nbsp;</label></td>
+   </tr>
+      <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Mã trạm <font color="red">*</font> </strong></td>
+     <td width="40%"><input  name="Ma_tram" id="Ma_tram" size="40" maxlength="250" value ="<%=objRS.Fields("Ma_tram")%>"/></td>
+     <td width="30%"><label class="font_alert" id="for_Ma_tram">&nbsp;</label></td>
+   </tr>
+   <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Mã công trình</strong></td>
+     <td width="40%"><input  name="Ma_cong_trinh" id="Ma_cong_trinh" size="40" maxlength="250" value ="<%=objRS.Fields("Ma_cong_trinh")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+   <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> ĐVTC </strong></td>
+     <td><select name="DVTC"  class="DVTC" id="DVTC" size="1" />
+		<option selected><%=objRS.Fields("DVTC")%></option>
+		<option value="UQ">UQ</option>
+		<option value="CTCT">CTCT</option>	
+		<option value="Lam Sơn">Lam Sơn</option>
+		<option value="Minh Ngọc">Minh Ngọc</option>			
+		<option value="Khánh Trà">Khánh Trà</option> 	
+		</select>  
+		</td>
+   </tr>
+   <tr>
+	<td width="30%"><strong><img src="images/maskrow.gif" />Loại trạm(trên mái, dưới đất)</strong> </td>
+     <td><select name="Loai_tram_TM_DD" class="Loai_tram_TM_DD" id="Loai_tram_TM_DD" size="1"  onChange="tudong_hienthi()" >
+		<option selected><%=objRS.Fields("Loai_tram_TM_DD")%></option>
+		<option value="Trên mái">Trên mái</option>
+		<option value="Cột tự đứng">Cột tự đứng </option>		
+		<option value="Dưới đất">Dưới đất</option> </select>   </td>
+    </tr>
+<tr>
+<td width="30%"><strong><img src="images/maskrow.gif" />Địa hinh</strong> </td>
+     <td><select name="Dia_hinh" class="Dia_hinh" id="Dia_hinh" size="1"  onChange="tudong_hienthi()">
+	 	<option selected><%=objRS.Fields("Dia_hinh")%></option>
+		<option value="Đồng bằng">Đồng bằng</option>
+		<option value="Hải đảo">Hải đảo</option>
+		<option value="Miền núi">Miền núi</option> 
+		</select>    
+	   </td>
+
+  </tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Loại cột</strong></td>
+     <td><select name="Loai_cot"  class="Loai_cot" id="Loai_cot" size="1"    onChange="tudong_hienthi()">
+		<option selected><%=objRS.Fields("Loai_cot")%></option>
+		<option value="600">600</option>
+		<option value="300">300</option>	
+		<option value="BTLT">BTLT</option>
+		<option value="Cóc">Cóc</option>			
+		<option value="CS">CS</option> 
+		<option value="Hapulico">Hapulico</option>	
+		<option value="Tự đứng">Tự đứng</option>
+		<option value="1000">1000</option>			
+		<option value="Ngụy trang">Ngụy trang</option> 	
+		</select>  
+		</td>
+   </tr>
+   <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Độ cao cột</strong></td>
+     <td width="40%"><input  name="Do_cao_cot" id="Do_cao_cot" size="40" maxlength="250" value ="<%=objRS.Fields("Do_cao_cot")%>" onfocusout="tudong_hienthi()">
+	 </td>
+     <td width="30%">&nbsp;</td>
+   </tr>   <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Loại nhà</strong></td>
+     <td><select name="Loai_nha"  class="Loai_nha" id="Loai_nha" size="1" onChange="tudong_hienthi()"/>
+		<option selected><%=objRS.Fields("Loai_nha")%></option>
+		<option value="Cont">Cont</option>
+		<option value="Cải tạo">Cải tạo</option>	
+		<option value="CS">CS</option>
+		<option value="DC mini">DC mini</option>			
+		<option value="Minishelter">Minishelter</option> 
+		<option value="Xây">Xây</option>	
+		<option value="Smallcell">Smallcell</option>
+		</select>  
+		</td>
+	 
+   </tr>	 <td width="30%"><strong><img src="images/maskrow.gif" /> Target Phát sóng(Ngày)</strong></td>
+     <td width="40%"><input  name="Target_phat_song_ngay" id="Target_phat_song_ngay" size="40" maxlength="250"  value ="<%=objRS.Fields("Target_phat_song_ngay")%>" disabled/></td>
+     
+	 <td width="10%">&nbsp;</td>
+   </tr>
+   <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Target xong móng cột</strong></td>
+     <td width="40%"><input  name="Target_xong_mong_cot" id="Target_xong_mong_cot" size="40" maxlength="250" value ="<%=objRS.Fields("Target_xong_mong_cot")%>"  disabled/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>   <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Target xong cột</strong></td>
+     <td width="40%"><input  name="Target_xong_cot" id="Target_xong_cot" size="40" maxlength="250" value ="<%=objRS.Fields("Target_xong_cot")%>"  disabled/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>	 <td width="30%"><strong><img src="images/maskrow.gif" /> Target xong nhà</strong></td>
+     <td width="40%"><input  name="Target_xong_nha" id="Target_xong_nha" size="40" maxlength="250" value ="<%=objRS.Fields("Target_xong_nha")%>" disabled/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+   <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Kế hoạch tháng</strong></td>
+     <td> <select name="Ke_hoach_thang"  class="Ke_hoach_thang" id="Ke_hoach_thang" size="1" value =""/>
+	 		<option selected><%=objRS.Fields("Ke_hoach_thang")%></option>
+             <option value="KH T1">KH T1</option>
+             <option value="KH T2">KH T2</option>
+             <option value="KH T3">KH T3</option>
+             <option value="KH T4">KH T4</option>
+             <option value="KH T5">KH T5</option>
+             <option value="KH T6">KH T6</option>
+             <option value="KH T7">KH T7</option>
+             <option value="KH T8">KH T8</option>
+             <option value="KH T9">KH T9</option>
+             <option value="KH T10">KH T10</option>
+             <option value="KH T11">KH T11</option>
+             <option value="KH T12">KH T12</option>
+             <option value="BS KH T1">BS KH T1</option>
+             <option value="BS KH T2">BS KH T2</option>
+             <option value="BS KH T3">BS KH T3</option>
+             <option value="BS KH T4">BS KH T4</option>
+             <option value="BS KH T5">BS KH T5</option>
+             <option value="BS KH T6">BS KH T6</option>
+             <option value="BS KH T7">BS KH T7</option>
+             <option value="BS KH T8">BS KH T8</option>
+             <option value="BS KH T9">BS KH T9</option>
+             <option value="BS KH T10">BS KH T10</option>
+             <option value="BS KH T11">BS KH T11</option>
+             <option value="BS KH T12">BS KH T12</option>
+             
+		</select> </td>
+   </tr>  
+   <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Ngày BGMB</strong></td>
+     <td><input  name="Ngay_BGMB" id="Ngay_BGMB" size="40" maxlength="250" value="<%=(objRS.Fields("Ngay_BGMB"))%>"  onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_BGMB_btn" src="images/calendar.png" width="20" height="20" />	 &nbsp;</td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+	 </tr>
+	 
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày cấp Bulong móng </strong></td>
+     <td ><input  name="Ngay_cap_Bulong_mong" id="Ngay_cap_Bulong_mong" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_cap_Bulong_mong"))%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_cap_Bulong_mong_btn" src="images/calendar.png" width="20" height="20" />&nbsp;</td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Thời gian giảm trừ trước khởi công </strong></td>
+     <td width="40%"><input  name="Thoi_gian_giam_tru_truoc_KC" id="Thoi_gian_giam_tru_truoc_KC" size="40" maxlength="250" value ="<%=objRS.Fields("Thoi_gian_giam_tru_truoc_KC")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân con quá hạn khởi công </strong></td>
+     <td> <select name="Nguyen_nhan_con_QHKC"  class="Nguyen_nhan_con_QHKC" id="Nguyen_nhan_con_QHKC" size="1" onChange="tudong_hienthi_Nguyen_nhan_cha()" >
+		<option selected><%=objRS.Fields("Nguyen_nhan_con_QHKC")%></option>
+		<option value="Vướng GPXD">Vướng GPXD</option>
+		<option value="Vướng kiện">Vướng kiện</option>	
+		<option value="Lập PYC chậm">Lập PYC chậm</option>
+		<option value="Hàng về kho Tỉnh chưa kịp cấp cho ĐVTC">Hàng về kho Tỉnh chưa kịp cấp cho ĐVTC</option>			
+		<option value="Chưa có đội triển khai">Chưa có đội triển khai</option>			
+		<option value="Có triển khai nhưng không đủ nhân công">Có triển khai nhưng không đủ nhân công</option> 
+		<option value="Mưa, ngập nước, đường lầy lội">Mưa, ngập nước, đường lầy lội</option>
+		<option value="Vướng hợp đồng thuê">Vướng hợp đồng thuê</option>	
+		<option value="Chưa có hợp đồng">Chưa có hợp đồng</option>
+		<option value="Chưa có thiết kế">Chưa có thiết kế</option>	
+		<option value="Chưa có NN">Chưa có NN</option>
+		</select> </td>
+   </tr>   
+<tr>
+  <td width="40%"><strong><img src="images/maskrow.gif" />  Nguyên nhân cha quá hạn khởi công </strong></td>
+     <td width="40%"><input  name="Nguyen_nhan_cha_QHKC" id="Nguyen_nhan_cha_QHKC" size="40" maxlength="250"  value ="<%=objRS.Fields("Nguyen_nhan_cha_QHKC")%>" disabled/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Quá hạn khởi công </strong></td>
+     <td width="40%"><input  name="Qua_han_khoi_cong" id="Qua_han_khoi_cong" size="40" maxlength="250" value ="<%=objRS.Fields("Qua_han_khoi_cong")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày Khởi công </strong></td>
+     <td ><input  name="Ngay_khoi_cong" id="Ngay_khoi_cong" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_khoi_cong"))%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_khoi_cong_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày xong móng cột </strong></td>
+     <td ><input  name="Ngay_xong_mong_cot" id="Ngay_xong_mong_cot" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_xong_mong_cot"))%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_xong_mong_cot_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Quá hạn xong móng cột </strong></td>
+     <td width="40%"><input  name="Qua_han_xong_MC" id="Qua_han_xong_MC" size="40" maxlength="250" value ="<%=objRS.Fields("Qua_han_xong_MC")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân con quá hạn móng cột </strong></td>
+     <td> <select name="Nguyen_nhan_con_QHMC"  class="Nguyen_nhan_con_QHMC" id="Nguyen_nhan_con_QHMC" size="1" onChange="tudong_hienthi_Nguyen_nhan_cha()" >
+		<option selected><%=objRS.Fields("Nguyen_nhan_con_QHMC")%></option>
+		<option value="Vướng GPXD">Vướng GPXD</option>
+		<option value="Vướng kiện">Vướng kiện</option>	
+		<option value="Chưa đảm bảo VT(bulong mặt bích)">Chưa đảm bảo VT(bulong mặt bích)</option>
+		<option value="Chưa có đội triển khai">Chưa có đội triển khai</option>			
+		<option value="Có triển khai nhưng không đủ nhân công">Có triển khai nhưng không đủ nhân công</option> 
+		<option value="Mưa triển khai chậm">Mưa triển khai chậm</option>
+		<option value="Lập PYC chậm">Lập PYC chậm</option>
+		<option value="Hàng về kho Tỉnh chưa kịp cấp cho ĐVTC">Hàng về kho Tỉnh chưa kịp cấp cho ĐVTC</option>			
+		<option value="Mưa, ngập nước, đường lầy lội">Mưa, ngập nước, đường lầy lội</option>
+		<option value="Vướng hợp đồng thuê">Vướng hợp đồng thuê</option>	
+		<option value="Chưa có hợp đồng">Chưa có hợp đồng</option>
+		<option value="Chưa có thiết kế">Chưa có thiết kế</option>	
+		<option value="Chưa có NN">Chưa có NN</option>
+		</select> </td>
+   </tr>
+   <tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân cha quá hạn móng cột </strong></td>
+     <td width="40%"><input  name="Nguyen_nhan_cha_QHMC" id="Nguyen_nhan_cha_QHMC" size="40" maxlength="250" value ="<%=objRS.Fields("Nguyen_nhan_cha_QHMC")%>" disabled/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày cấp cột </strong></td>
+     <td ><input  name="Ngay_cap_cot" id="Ngay_cap_cot" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_cap_cot"))%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_cap_cot_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày xong cột </strong></td>
+     <td ><input  name="Ngay_xong_cot" id="Ngay_xong_cot" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_xong_cot"))%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_xong_cot_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Quá hạn xong cột </strong></td>
+     <td width="40%"><input  name="Qua_han_xong_cot" id="Qua_han_xong_cot" size="40" maxlength="250" value ="<%=objRS.Fields("Qua_han_xong_cot")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+
+   <tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân con quá hạn xong cột </strong></td>
+     <td> <select name="Nguyen_nhan_con_QHXC"  class="Nguyen_nhan_con_QHXC" id="Nguyen_nhan_con_QHXC" size="1" onChange="tudong_hienthi_Nguyen_nhan_cha()" >
+		<option selected><%=objRS.Fields("Nguyen_nhan_con_QHXC")%></option>
+		<option value="Vướng GPXD">Vướng GPXD</option>
+		<option value="Vướng kiện">Vướng kiện</option>	
+		<option value="Chưa cấp cột">Chưa cấp cột</option>
+		<option value="Cột lỗi">Cột lỗi</option>	
+		<option value="Cấp cột không đồng bộ">Cấp cột không đồng bộ</option>		
+		<option value="Chưa có đội triển khai">Chưa có đội triển khai</option>			
+		<option value="Có triển khai nhưng không đủ nhân công">Có triển khai nhưng không đủ nhân công</option> 
+		<option value="Chưa đảm bảo VT(bulong mặt bích)">Chưa đảm bảo VT(bulong mặt bích)</option>
+		<option value="Mưa triển khai chậm">Mưa triển khai chậm</option>
+		<option value="Lập PYC chậm">Lập PYC chậm</option>
+		<option value="Hàng về kho Tỉnh chưa kịp cấp cho ĐVTC">Hàng về kho Tỉnh chưa kịp cấp cho ĐVTC</option>			
+		<option value="Mưa, ngập nước, đường lầy lội">Mưa, ngập nước, đường lầy lội</option>
+		<option value="Vướng hợp đồng thuê">Vướng hợp đồng thuê</option>	
+		<option value="Chưa có hợp đồng">Chưa có hợp đồng</option>
+		<option value="Chưa có thiết kế">Chưa có thiết kế</option>	
+		<option value="Chưa có NN">Chưa có NN</option>
+		</select> </td>
+   </tr>
+   <tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân cha quá hạn xong cột </strong></td>
+     <td width="40%"><input  name="Nguyen_nhan_cha_QHXC" id="Nguyen_nhan_cha_QHXC" size="40" maxlength="250" value ="<%=objRS.Fields("Nguyen_nhan_cha_QHXC")%>" disabled/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày cấp nhà Cont </strong></td>
+     <td ><input  name="Ngay_cap_nha_cont" id="Ngay_cap_nha_cont" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_cap_nha_cont"))%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_cap_nha_cont_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày xong nhà </strong></td>
+     <td ><input  name="Ngay_xong_nha" id="Ngay_xong_nha" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_xong_nha"))%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_xong_nha_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Quá hạn xong nhà </strong></td>
+     <td width="40%"><input  name="Qua_han_xong_nha" id="Qua_han_xong_nha" size="40" maxlength="250" value ="<%=objRS.Fields("Qua_han_xong_nha")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+   
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân con quá hạn xong nhà </strong></td>
+     <td> <select name="Nguyen_nhan_con_QHXN"  class="Nguyen_nhan_con_QHXN" id="Nguyen_nhan_con_QHXN" size="1" onChange="tudong_hienthi_Nguyen_nhan_cha()" >
+		<option selected><%=objRS.Fields("Nguyen_nhan_con_QHXN")%></option>
+		<option value="Vướng GPXD">Vướng GPXD</option>
+		<option value="Vướng kiện">Vướng kiện</option>	
+		<option value="Chưa cấp nhà">Chưa cấp nhà</option>
+		<option value="Nhà lỗi">Nhà lỗi</option>	
+		<option value="Cấp nhà không đồng bộ">Cấp nhà không đồng bộ</option>		
+		<option value="Chưa có đội triển khai">Chưa có đội triển khai</option>			
+		<option value="Có triển khai nhưng không đủ nhân công">Có triển khai nhưng không đủ nhân công</option> 
+		<option value="Lập PYC chậm">Lập PYC chậm</option>
+		<option value="Hàng về kho Tỉnh chưa kịp cấp cho ĐVTC">Hàng về kho Tỉnh chưa kịp cấp cho ĐVTC</option>			
+		<option value="Mưa, ngập nước, đường lầy lội">Mưa, ngập nước, đường lầy lội</option>
+		<option value="Vướng hợp đồng thuê">Vướng hợp đồng thuê</option>	
+		<option value="Chưa có hợp đồng">Chưa có hợp đồng</option>
+		<option value="Chưa có thiết kế">Chưa có thiết kế</option>
+		<option value="Thay đổi thiết kế">Thay đổi thiết kế</option>			
+		<option value="Chưa có NN">Chưa có NN</option>
+		</select> </td>
+   </tr>
+   
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân cha quá hạn xong nhà</strong></td>
+     <td width="40%"><input  name="Nguyen_nhan_cha_QHXN" id="Nguyen_nhan_cha_QHXN" size="40" maxlength="250" value ="<%=objRS.Fields("Nguyen_nhan_cha_QHXN")%>" disabled/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày cấp TB </strong></td>
+     <td ><input  name="Ngay_cap_tb" id="Ngay_cap_tb" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_cap_tb"))%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_cap_tb_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày lắp xong TB </strong></td>
+     <td ><input  name="Ngay_lap_xong_tb" id="Ngay_lap_xong_tb" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_lap_xong_tb"))%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_lap_xong_tb_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Target lắp thiết bị(Ngày) </strong></td>
+     <td width="40%"><input  name="Target_lap_tb_ngay" id="Target_lap_tb_ngay" size="40" maxlength="250" value ="<%=objRS.Fields("Target_lap_tb_ngay")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Quá hạn lắp xong TB </strong></td>
+     <td width="40%"><input  name="Qua_han_lap_xong_tb" id="Qua_han_lap_xong_tb" size="40" maxlength="250" value ="<%=objRS.Fields("Qua_han_lap_xong_tb")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân con quá hạn thiết bị </strong></td>
+     <td> <select name="Nguyen_nhan_con_QHTB"  class="Nguyen_nhan_con_QHTB" id="Nguyen_nhan_con_QHTB" size="1" onChange="tudong_hienthi_Nguyen_nhan_cha()" >
+		<option selected><%=objRS.Fields("Nguyen_nhan_con_QHTB")%></option>
+		<option value="Vướng GPXD">Vướng GPXD</option>
+		<option value="Vướng kiện">Vướng kiện</option>	
+		<option value="Chưa cấp thiết bị">CChưa cấp thiết bị</option>
+		<option value="Hỏng thiết bị">Hỏng thiết bị</option>	
+		<option value="Cấp thiết bị không đồng bộ">Cấp thiết bị không đồng bộ</option>		
+		<option value="Chưa có đội triển khai">Chưa có đội triển khai</option>			
+		<option value="Có triển khai nhưng không đủ nhân công">Có triển khai nhưng không đủ nhân công</option> 
+		<option value="Lập PYC chậm">Lập PYC chậm</option>
+		<option value="Hàng về kho Tỉnh chưa kịp cấp cho ĐVTC">Hàng về kho Tỉnh chưa kịp cấp cho ĐVTC</option>			
+		<option value="Mưa, ngập nước, đường lầy lội">Mưa, ngập nước, đường lầy lội</option>
+		<option value="Vướng hợp đồng thuê">Vướng hợp đồng thuê</option>	
+		<option value="Chưa có hợp đồng">Chưa có hợp đồng</option>
+		<option value="Chưa có thiết kế">Chưa có thiết kế</option>
+		<option value="Thay đổi Calloff">Thay đổi Calloff</option>	
+		<option value="Đã điều chuyển thiết bị đi trạm khác">Đã điều chuyển thiết bị đi trạm khác</option>			
+		<option value="Chưa có NN">Chưa có NN</option>
+		</select> </td>
+   </tr>
+   <tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân cha quá hạn thiết bị</strong></td>
+     <td width="40%"><input  name="Nguyen_nhan_cha_QHTB" id="Nguyen_nhan_cha_QHTB" size="40" maxlength="250" value ="<%=objRS.Fields("Nguyen_nhan_cha_QHTB")%>" disabled/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Target xong điện(Ngày) </strong></td>
+     <td width="40%"><input  name="Target_xong_dien_ngay" id="Target_xong_dien_ngay" size="40" maxlength="250" value ="<%=objRS.Fields("Target_xong_dien_ngay")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày Xong điện </strong></td>
+     <td ><input  name="Ngay_xong_dien" id="Ngay_xong_dien" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_xong_dien"))%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_xong_dien_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân con quá hạn xong Điện </strong></td>
+     <td> <select name="Nguyen_nhan_con_QHXD"  class="Nguyen_nhan_con_QHXD" id="Nguyen_nhan_con_QHXD" size="1" onChange="tudong_hienthi_Nguyen_nhan_cha()" >
+		<option selected><%=objRS.Fields("Nguyen_nhan_con_QHXD")%></option>
+		<option value="Chưa nộp hồ sơ điện">Chưa nộp hồ sơ điện</option>
+		<option value="Vướng kiện">Vướng kiện</option>	
+		<option value="Chưa hạ công tơ">Chưa hạ công tơ</option>
+		<option value="Chưa mua dây điện">Chưa mua dây điện</option>	
+		<option value="Chưa trồng cột AC">Chưa trồng cột AC</option>		
+		<option value="Chưa có đội triển khai">Chưa có đội triển khai</option>			
+		<option value="Có triển khai nhưng không đủ nhân công">Có triển khai nhưng không đủ nhân công</option> 
+		<option value="Chưa cấp Máy nổ">Chưa cấp Máy nổ</option>
+		</select> </td>    
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân cha quá hạn xong Điện </strong></td>
+     <td width="40%"><input  name="Nguyen_nhan_cha_QHXD" id="Nguyen_nhan_cha_QHXD" size="40" maxlength="250" value ="<%=objRS.Fields("Nguyen_nhan_cha_QHXD")%>" disabled/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+ 
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Target xong Quang(Ngày) </strong></td>
+     <td width="40%"><input  name="Target_xong_quang" id="Target_xong_quang" size="40" maxlength="250" value ="<%=objRS.Fields("Target_xong_quang")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày Xong quang </strong></td>
+     <td ><input  name="Ngay_xong_quang" id="Ngay_xong_quang" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_xong_quang"))%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_xong_quang_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân con quá hạn xong Quang </strong></td>
+     <td> <select name="Nguyen_nhan_con_QHXQ"  class="Nguyen_nhan_con_QHXQ" id="Nguyen_nhan_con_QHXQ" size="1" onChange="tudong_hienthi_Nguyen_nhan_cha()" >
+		<option selected><%=objRS.Fields("Nguyen_nhan_con_QHXQ")%></option>
+        <option value="Chưa có hợp đồng kéo Quang">Chưa có hợp đồng kéo Quang</option>
+        <option value="Vướng kiện">Vướng kiện</option>
+        <option value="Chưa cấp VT">Chưa cấp VT</option>
+        <option value="Chưa cấp cột">Chưa cấp cột</option>
+        <option value="Chưa trồng cột">Chưa trồng cột</option>
+        <option value="Chưa có đội triển khai">Chưa có đội triển khai</option>
+        <option value="Có triển khai nhưng không đủ nhân công">Có triển khai nhưng không đủ nhân công</option>
+        <option value="Lập PYC chậm">Lập PYC chậm</option>
+        <option value="Cấp VT không đồng bộ">Cấp VT không đồng bộ</option>
+        <option value="Chưa cấp viba">Chưa cấp viba</option>
+        <option value="Hỏng thiết bị truyền dẫn">Hỏng thiết bị truyền dẫn</option>
+        <option value="Chưa hàn nối">Chưa hàn nối</option>
+        <option value="Chưa thông tuyến">Chưa thông tuyến</option>
+        <option value="Đang triển khai">Đang triển khai</option>
+
+		</select> </td>     
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân cha quá hạn xong Quang </strong></td>
+     <td width="40%"><input  name="Nguyen_nhan_cha_QHXQ" id="Nguyen_nhan_cha_QHXQ" size="40" maxlength="250" value ="<%=objRS.Fields("Nguyen_nhan_cha_QHXQ")%>" disabled/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày phát sóng </strong></td>
+     <td ><input  name="Ngay_ps" id="Ngay_ps" size="40" maxlength="250" value ="<%=(objRS.Fields("Ngay_ps"))	%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "Ngay_ps_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Trạng thái PS </strong></td>
+     <td width="40%"><input  name="Trang_thai_ps" id="Trang_thai_ps" size="40" maxlength="250" value ="<%=objRS.Fields("Trang_thai_ps")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân cha quá hạn PS</strong></td>
+     <td width="40%"><input  name="Nguyen_nhan_cha_QHPS" id="Nguyen_nhan_cha_QHPS" size="40" maxlength="250" value ="<%=objRS.Fields("Nguyen_nhan_cha_QHPS")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Nguyên nhân con quá hạn PS</strong></td>
+     <td> <select name="Nguyen_nhan_con_QHPS"  class="Nguyen_nhan_con_QHPS" id="Nguyen_nhan_con_QHPS" size="1" value =""/>
+		<option selected><%=objRS.Fields("Nguyen_nhan_con_QHPS")%></option>
+        <option value="Chưa có File cấu hình">Chưa có File cấu hình</option>
+        <option value="Chưa có CR">Chưa có CR</option>
+        <option value="Chưa Khai luồng">Chưa Khai luồng</option>
+        <option value="Chưa Chèn truyền dẫn SRT">Chưa Chèn truyền dẫn SRT</option>
+        <option value="Chưa có nhân sự tích hợp">Chưa có nhân sự tích hợp</option>
+        <option value="Tích hợp bị lỗi">Tích hợp bị lỗi</option>
+        <option value="Đã tích hợp, lỗi thiết bị">Đã tích hợp, lỗi thiết bị</option>
+        <option value="Đã tích hợp, chưa đảm bảo điều kiện khác">Đã tích hợp, chưa đảm bảo điều kiện khác</option>
+
+		</select> </td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Thời gian thi công đến hiện tại(ngày) </strong></td>
+     <td width="40%"><input  name="Time_thi_cong_ht" id="Time_thi_cong_ht" size="40" maxlength="250" value ="<%=objRS.Fields("Time_thi_cong_ht")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Thời gian giảm trừ(ngày) </strong></td>
+     <td width="40%"><input  name="Time_giam_tru" id="Time_giam_tru" size="40" maxlength="250" value ="<%=objRS.Fields("Time_giam_tru")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Thời gian thi công sau giảm trừ </strong></td>
+     <td width="40%"><input  name="Time_thi_cong_sau_gt" id="Time_thi_cong_sau_gt" size="40" maxlength="250" value ="<%=objRS.Fields("Time_thi_cong_sau_gt")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Tình trạng </strong></td>
+     <td width="40%"><input  name="Tinh_trang" id="Tinh_trang" size="40" maxlength="250" value ="<%=objRS.Fields("Tinh_trang")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Trạm ưu tiên </strong></td>
+     <td width="40%"><input  name="Tram_uu_tien" id="Tram_uu_tien" size="40" maxlength="250" value ="<%=objRS.Fields("Tram_uu_tien")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Ngày phê duyệt vị trí trạm </strong></td>
+     <td ><input  name="Ngay_pd_vtri_tram" id="startTime" size="40" maxlength="250" value ="<%=objRS.Fields("Ngay_pd_vtri_tram")%>" onChange="onChaneText(this.value,'for_startTime')"/>&nbsp;<img id= "startTime_btn" src="images/calendar.png" width="20" height="20" /></td>
+     <td ><label class="font_alert" id="for_startTime">&nbsp;</label></td>
+   </tr>
+<tr>
+  <td width="30%"><strong><img src="images/maskrow.gif" />  Công văn phê duyệt trạm </strong></td>
+     <td width="40%"><input  name="CV_phe_duyet_vtri_tram" id="CV_phe_duyet_vtri_tram" size="40" maxlength="250" value ="<%=objRS.Fields("CV_phe_duyet_vtri_tram")%>"/></td>
+     <td width="30%">&nbsp;</td>
+   </tr>
+   <script type="text/javascript">//<![CDATA[
+    var startTime = Calendar.setup({
+        inputField : "startTime",
+        trigger    : "startTime_btn",
+		weekNumbers: true,
+		onSelect: function() {
+							  var date = new Date();
+							  this.args.max = date;
+							  this.redraw();
+							  this.hide();
+                          },
+        showTime   : 24,		
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_BGMB = Calendar.setup({
+        inputField : "Ngay_BGMB",
+        trigger    : "Ngay_BGMB_btn",
+		weekNumbers: true,
+		onSelect: function() {
+							  var date = new Date();
+							  this.args.max = date;
+							  this.redraw();
+							  this.hide();
+                          },
+        showTime   : 24,		
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_cap_Bulong_mong= Calendar.setup({
+        inputField : "Ngay_cap_Bulong_mong",
+        trigger    : "Ngay_cap_Bulong_mong_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_khoi_cong= Calendar.setup({
+        inputField : "Ngay_khoi_cong",
+        trigger    : "Ngay_khoi_cong_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_xong_mong_cot= Calendar.setup({
+        inputField : "Ngay_xong_mong_cot",
+        trigger    : "Ngay_xong_mong_cot_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_cap_cot= Calendar.setup({
+        inputField : "Ngay_cap_cot",
+        trigger    : "Ngay_cap_cot_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_xong_cot= Calendar.setup({
+        inputField : "Ngay_xong_cot",
+        trigger    : "Ngay_xong_cot_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_cap_nha_cont= Calendar.setup({
+        inputField : "Ngay_cap_nha_cont",
+        trigger    : "Ngay_cap_nha_cont_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_xong_nha= Calendar.setup({
+        inputField : "Ngay_xong_nha",
+        trigger    : "Ngay_xong_nha_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_cap_tb= Calendar.setup({
+        inputField : "Ngay_cap_tb",
+        trigger    : "Ngay_cap_tb_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_lap_xong_tb= Calendar.setup({
+        inputField : "Ngay_lap_xong_tb",
+        trigger    : "Ngay_lap_xong_tb_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_xong_dien= Calendar.setup({
+        inputField : "Ngay_xong_dien",
+        trigger    : "Ngay_xong_dien_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_xong_quang= Calendar.setup({
+        inputField : "Ngay_xong_quang",
+        trigger    : "Ngay_xong_quang_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_ps= Calendar.setup({
+        inputField : "Ngay_ps",
+        trigger    : "Ngay_ps_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+var Ngay_pd_vtri_tram= Calendar.setup({
+        inputField : "Ngay_pd_vtri_tram",
+        trigger    : "Ngay_pd_vtri_tram_btn",
+  weekNumbers: true,
+  onSelect: function() {
+         var date = new Date();
+         this.args.max = date;
+         this.redraw();
+         this.hide();
+                          },
+        showTime   : 24,  
+        dateFormat : "%d/%m/%Y"
+      });
+
+
+	 var endTime = Calendar.setup({
+        inputField : "endTime",
+        trigger    : "endTime_btn",
+		weekNumbers: true,
+		onSelect: function() {
+							  var date = new Date();
+							  this.args.max = date;
+							  this.redraw();
+							  this.hide();
+                          },
+        showTime   : 24,		
+        dateFormat : "%d/%m/%Y"
+      });
+	
+    //]]></script>	
+   <tr>
+	 <td width="30%"><strong><img src="images/maskrow.gif" /> Ghi chú</strong></td>
+     <td width="40%">
+	   <span class="font_inform"  id="label_INCEffect"></span>
+       <textarea name="ask" cols="50" rows="5" id="ask" class="textarea" ></textarea></td>
+     <td width="30%"><label class="font_alert" id="for_hidden_effect">&nbsp;</label></td>
+   </tr>   
+   
+   
+   <tr>
+     <td colspan="3" class="list_nemo_center" >
+	    <input type="submit" class="hieu_ung_nut2" name="Submit" value="Tạo Hạ tầng"/>
+       <input name="Reset" type="reset" class="hieu_ung_nut2" id="Reset" value="Reset"/>
+	   <input name="back" type="button" class="hieu_ung_nut2" id="back" value="Quay lại" ONCLICK="history.go(-1)"/>	 </td>
+    </tr>
+</table>
+</div>
+</form> 
+</div>
+</fieldset>
+
+
+
+<%End if ' End viec kiem tra co du lieu cong viec khong%> 

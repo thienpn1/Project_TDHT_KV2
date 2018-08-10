@@ -1,0 +1,377 @@
+@charset "utf-8";
+body {
+	margin:0;
+	padding:0;
+	width:100%;
+
+	font:normal 12px/1.8em Arial, Helvetica, sans-serif;
+	background:url(../images/bg.png) repeat fixed;
+}
+html{
+	padding:0;
+	margin:0;
+}
+
+
+
+h1, h2, h3, h4, p, ul, li, form{
+	margin:0;
+	padding:0;
+	}
+
+h1{
+color:#5fa6ef;
+font-size:23px;
+}	
+
+h6{
+color:#eb7c3f;
+font-size:16px;
+font-weight:bold;
+margin-bottom:10px;
+padding:0;
+}
+
+h5{
+color:#5fa6ef;
+font-size:16px;
+
+margin-bottom:10px;
+padding:0;
+}
+
+table{
+border-spacing:0px;
+}
+ 
+th{
+width:75px;
+padding:0;
+margin:0;
+font: normal 14px Arial, Helvetica, sans-serif;
+font-weight:bold;
+}
+ 
+ 
+ 
+table p {
+
+margin:0;
+	padding:0;
+}
+	
+a {
+	color:#eb7c3f;
+	text-decoration:underline;
+}
+
+
+.header, .content, .menu, .footer, form, ol, ol li, ul {
+	margin:0;
+	padding:0;
+}
+
+/*-------------CSS phần đầu gồm logo và menu---------------*/
+.header {
+
+margin:0 auto;margin-top:20px;
+	padding:0;
+	width:970px;
+	height:125px;
+}
+/*----------Phần chứa logo---------------*/
+
+.logo {
+	padding:0;
+	float:left;
+	width:auto;
+	margin-left: 20px;
+}
+/*--------CSS cho menu----------------*/
+.menu {
+float:left;
+	margin-top:15px;
+	margin-left:150px;
+	padding:0 24px;
+	
+}
+.menu ul {
+	list-style:none;
+	padding:0;
+	float:left;
+
+	
+}
+.menu ul li {
+	margin:0;
+	padding:0;
+	float:left;
+	margin-left:10px;
+}
+.menu ul li a {
+	display:block;
+	margin:0;
+	margin-top: 3px;
+	padding:10px 24px;
+	color:#bbbbbb;
+	background:url(../images/menu2.png) repeat-x center top;/*Màu nền mặc định khi ko có hiệu ứng*/
+	text-decoration:none;
+	font-size:16px;
+	font-weight:bold;
+	/*----------GARDIENT MÀU MENU--------------------------*/
+	background-color: #fff;
+	background-image:-moz-linear-gradient(top, #fff, #e0e0e0);
+	background-image: -webkit-gradient(linear, 0% 45%, 0% 100%, from(#fff), to(#e0e0e0), color-stop(1,#fff));
+	
+	/*---------------Tạo đường bo tròn------------------------*/
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;	
+	border-radius: 10px;
+
+		/*----Tạo hiệu ứng đổ bóng----------*/
+	box-shadow: 1px 1px 1px rgba(0,0,0,0.25);
+	-moz-box-shadow: 1px 1px 1px rgba(0,0,0,0.25);
+	-webkit-box-shadow: 1px 1px 1px rgba(0,0,0,0.25);
+}
+.menu ul li.active a, .menu ul li a:hover {
+	color:#fff;
+	background:url(../images/menu.png) repeat-x center top;/*Màu nền mặc định khi ko có hiệu ứng*/
+/*----------GARDIENT MÀU MENU--------------------------*/
+	background-image:-moz-linear-gradient(top, #ffd391, #ec8d49); /*xem trên FF*/
+	background-image: -webkit-gradient(linear, 0% 45%, 0% 100%, from(#ffd391), to(#ec8d49), color-stop(1,#ffd391));
+	
+	/*---------------Tạo đường bo tròn------------------------*/
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;	
+	border-radius: 10px;
+	/*----Tạo hiệu ứng đổ bóng----------*/
+	box-shadow: 1px 1px 1px rgba(0,0,0,0.25);
+	-moz-box-shadow: 1px 1px 1px rgba(0,0,0,0.25);
+	-webkit-box-shadow: 1px 1px 1px rgba(0,0,0,0.25);
+}
+
+/*----------CSS phần giữa--------------------*/
+.content {
+
+	margin:0 auto;
+	padding:0 ;
+	width:970px;
+	/*background:url(images/header_bg.jpg) repeat-y;*/
+}
+/*.content_resize {
+	
+	background-color:#FFF;/*màu nền cho cả nội dung
+}*/
+
+#dauthan{
+margin:0 auto;
+width:949px;
+height:37px;
+background:url(../images/dauthan.png) no-repeat;
+position:relative;
+padding:0;
+float:left;
+}
+
+#giuathan{
+margin:0 auto;
+padding:0;
+width:949px;
+background:url(../images/giuathan.png) repeat-y;
+height:auto;
+float:left;
+}
+
+#cuoithan{
+margin:0 auto;
+width:949px;
+height:45px;
+background:url(../images/cuoithan.png) no-repeat;
+position:relative;
+padding:0;
+float:left;
+}
+
+/*--------------Cột nội dung--------------------*/
+.cotlon{
+color: black;
+float:left;
+margin:0;
+padding:0;
+width: 680px;
+}
+
+.cotlon .hopchua{
+margin-left:10px;
+width:644px;
+}
+
+.cotlon .dau_hop{
+background:url(../images/dau_hop.png);
+height:77px;
+text-align:center;
+width:664px;
+
+}
+
+.cotlon .dau_hop h1{
+margin:0;
+padding-top:17px;
+color:#fff;
+margin-left:10px;
+}
+
+
+.cotlon .than_hop{
+background:url(../images/than_hop.png) repeat-y;
+width:664px;
+}
+
+.cotlon .than_hop .noidung{
+width:620px;
+padding: 0px 10px 10px 20px;
+font-size:14px;
+text-align:justify;
+}
+
+
+
+.cotlon .than_hop .noidung a{
+color: #FF6B00;
+text-decoration: none;
+}
+
+.cotlon .than_hop .noidung a:hover{
+	text-decoration:underline;
+	}
+	
+.cotlon .than_hop .noidung  a.more-link{
+	font-weight:bold;
+	}
+
+.cotlon .chan_hop{
+background:url(../images/chan_hop.png);
+height:33px;
+width:664px;
+}
+/*-----------------------------------------------------------------*/
+
+/*-------------Cột menu phải-----------------*/
+
+.cotbe{
+color: #FF6B00;
+margin:0;
+padding:0;
+width: 260px;
+float:left;
+display:inline;
+}
+
+.cotbe .hopchua{
+width:240px;
+margin-left:10px;
+}
+
+.cotbe .dau_hop{
+background:url(../images/dau_cot_phai.png);
+height:74px;
+text-align:center;
+width:249px;
+float:left;
+}
+/*----phần đầu của box tìm kiếm------------*/
+.cotbe .dau_hop2{
+background:url(../images/dau_phai.png);
+height:30px;
+width:249px;
+float:left;
+}
+
+.cotbe .hopchua .otim {
+
+height:20px;
+width:145px;
+float:left;
+margin-top:5px;
+}
+
+.cotbe .hopchua .nuttim {
+background:url(../images/timkiem.png);
+width:40px;
+height:35px;
+border:none;
+float:left;
+margin-left:5px;
+cursor:pointer;
+}
+
+.nuttim {
+background:url(../images/timkiem.png);
+width:40px;
+height:35px;
+border:none;
+margin-left:5px;
+cursor:pointer;
+}
+
+
+
+.cotbe .dau_hop h1{
+margin:0;
+padding-top:17px;
+color:#fff;
+margin-left:10px;
+}
+
+
+.cotbe .than_hop{
+background:url(../images/than_cot_phai.png) repeat-y;
+width:249px;
+float:left;
+}
+
+.cotbe .than_hop .noidung{
+width:200px;
+padding: 0px 10px 10px 20px;
+font-size:16px;
+}
+
+
+
+.cotbe .than_hop .noidung a{
+color: #FF6B00;
+text-decoration: none;
+}
+
+.cotbe .than_hop .noidung ul li a:hover{
+	color:#5fa6ef;
+	}
+	
+.cotbe .than_hop .noidung ul li.active a, .cotbe .than_hop .noidung ul li a:hover {
+	color:#5fa6ef;	
+}
+.cotbe .than_hop .noidung  a.more-link{
+	font-weight:bold;
+	}
+
+.cotbe .than_hop .noidung ul li{
+margin-left:30px;
+list-style-type:none;
+list-style-image:url(../images/book1.png);
+}
+
+.cotbe .than_hop .noidung ul li a{
+border-bottom:dotted #e0e0e0;
+padding-left:10px;
+font:18px/47px Arial;
+display:block;
+}
+
+.cotbe .chan_hop{
+background:url(../images/chan_cot_phai.png);
+height:29px;
+width:249px;
+float:left;
+}

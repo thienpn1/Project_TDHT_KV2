@@ -1,0 +1,23 @@
+<html>
+        <head>
+	
+		<!-- Multiline prompt -->
+		<script src="jquery.js" type="text/javascript"></script>
+		<script src="jquery.ui.draggable.js" type="text/javascript"></script>
+		<script src="jquery.alerts.js" type="text/javascript"></script>
+		<link href="jquery.alerts.css" rel="stylesheet" type="text/css" media="screen" />
+		
+                <script type="text/javascript">
+                        function disp_prompt()
+                        {						
+                         jPrompt('Noi dung:', '', 'Tien do xu ly', function(r) {if( r ) alert('You entered ' + r);});
+                        }
+                </script>
+        </head>
+        <body>
+                <form>
+                        <input type="button" onclick="disp_prompt()" value="Display a prompt box">
+                </form>
+        </body>
+
+</html>
